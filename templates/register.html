@@ -6,31 +6,32 @@
 {% endblock %}
 
 {% block content %}
-<form action="/register" method="post">
+  <form action="/register" method="post">
 
-{{ form.hidden_tag() }}
+      {{ form.hidden_tag() }}
 
-{% for field in form if field.widget.input_type != 'hidden' %}
+      {% for field in form if field.widget.input_type != 'hidden' %}
 
-  <!-- <div class='mb-3'> -->
+        <!-- <div class='mb-3'> -->
 
-    <div>
+          <div>
 
-    {{ field.label }}{{ field }}
+          {{ field.label }}{{ field }}
 
-    <span>
-      {% if field.errors %}
-        {% for error in field.errors %}
-          <b class="text-danger">{{ error }}</b>
-        {% endfor %}
-      {% endif %}
-    </span>
+          <span>
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <b class="text-danger">{{ error }}</b>
+              {% endfor %}
+            {% endif %}
+          </span>
 
-  </div>
+        </div>
 
-{% endfor %}
+      {% endfor %}
+    <button type="submit">Register</button>
 
-</form>
+  </form>
 
 
 

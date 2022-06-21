@@ -16,7 +16,7 @@ class RegisterUserForm (FlaskForm):
     password = PasswordField(
         'Password: ',
         # TODO: Length opf password in form affects Hash?
-        validators=[InputRequired(),Length(100)]
+        validators=[InputRequired(),Length(max=100)]
     )
 
     # EmailField()

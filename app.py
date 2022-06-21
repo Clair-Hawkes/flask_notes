@@ -60,4 +60,9 @@ def user_register():
     else:
         return render_template('register.html',form=form)
 
+@app.get('/secret')
+def secret():
+
+    return "You made it!"
+
 
