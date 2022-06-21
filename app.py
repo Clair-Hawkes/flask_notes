@@ -2,7 +2,7 @@
 
 from flask import Flask, request, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db
+from models import db, connect_db, User
 # from forms import TODO:
 
 app = Flask(__name__)
