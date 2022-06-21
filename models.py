@@ -33,6 +33,18 @@ class User(db.Model):
         nullable=False)
 
     @classmethod
+    def check_if_details_avail(cls, username, email):
+        """Check if username or email has been taken by another user."""
+
+        u = cls.query.filter_by(username=username).one_or_none()
+        e = cls.query.filter_by(email=email).one_or_none()
+
+        if u or e:
+            return False
+
+        return True
+
+    @classmethod
     def register(cls, username, password, email, first_name, last_name):
         """Register user w/hashed password & return user."""
 
@@ -47,7 +59,7 @@ class User(db.Model):
             last_name = last_name)
 
     @classmethod
-    def authenticate(cls, username,password):
+    def authenticate(cls, username, password):
         """
         Validate that a user exists and that the password matches
         Accepts username,password.

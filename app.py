@@ -1,6 +1,6 @@
 """Flask app for Notes"""
 
-from flask import Flask, request, jsonify, render_template, redirect, session
+from flask import Flask, request, jsonify, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterUserForm, LoginUserForm
 from models import db, connect_db, User
@@ -42,20 +42,23 @@ def user_register():
         first_name = form.first_name.data
         last_name = form.last_name.data
 
-        user = User.register(
-            username = username,
-            password = password,
-            email = email,
-            first_name = first_name,
-            last_name = last_name
-        )
-        db.session.add(user)
-        db.session.commit()
+        if User.check_if_details_avail(username=username, email=email):
+            user = User.register(
+                username = username,
+                password = password,
+                email = email,
+                first_name = first_name,
+                last_name = last_name
+            )
+            db.session.add(user)
+            db.session.commit()
 
-        # TODO: Does a register also log in the user via session?
-        session["username"] = user.username
+            session["username"] = user.username
+            return redirect('/secret')
 
-        return redirect('/secret')
+        else:
+            form.username.errors = ["Bad username/email"]
+            return render_template('register.html', form=form)
 
     else:
         return render_template('register.html',form=form)
@@ -91,19 +94,3 @@ def login():
             form.username.errors = ["Bad name/password"]
 
     return render_template("login.html", form=form)
-
-
-
-
-
-
-# GET /login
-# Show a form that when submitted will login a user.
-# This form should accept a username and a password.
-
-# Make sure you are using WTForms and that your password
-# input hides the characters that the user is typing!
-
-# POST /login
-# Process the login form,
-# ensuring the user is authenticated and going to /secret if so.
