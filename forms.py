@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, BooleanField, PasswordField
 from wtforms.validators import InputRequired, Length, URL, Optional
 
-class RegisterUser (FlaskForm):
+class RegisterUserForm (FlaskForm):
     """Form for registering a User instance"""
 
     username = StringField(

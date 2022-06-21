@@ -1,14 +1,13 @@
 """Flask app for Notes"""
 
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import RegisterUser
+from forms import RegisterUserForm
 from models import db, connect_db, User
-# from forms import TODO:
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "oh-so-secret"
 app.config['SQLALCHEMY_ECHO'] = True
@@ -29,17 +28,36 @@ def root():
 @app.route('/register', methods=['GET','POST'])
 def user_register():
     """
-    Show a form that when submitted will register/create a user.
+        GET: Show a form that when submitted will register/create a user.
+        POST: Handle form submission and register user in db.
     """
 
     # form = EditPetForm(obj=pet)
-    form = RegisterUser()
+    form = RegisterUserForm()
 
-    # if form.validate_on_submit():
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        email = form.email.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
 
-    # else: TODO: Else return html + form standard
+        user = User.register(
+            username = username,
+            password = password,
+            email = email,
+            first_name = first_name,
+            last_name = last_name
+        )
+        db.session.add(user)
+        db.session.commit()
 
-    return render_template('register.html',form=form)
+        session["username"] = user.username
 
+
+        return redirect('/secret')
+
+    else:
+        return render_template('register.html',form=form)
 
 
