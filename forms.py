@@ -1,37 +1,34 @@
 """Forms for notes app."""
 
-from email.message import EmailMessage
 from tokenize import String
-from flask import Flask
-import flask_sqlalchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, BooleanField, PasswordField
-from wtforms.validators import InputRequired, Length, URL, Optional
+from wtforms import StringField,PasswordField
+from wtforms.validators import InputRequired, Length, Email
+import email_validator
 
 class RegisterUserForm (FlaskForm):
     """Form for registering a User instance"""
 
     username = StringField(
-        'Username: ',
+        'Username',
         validators=[InputRequired(),Length(max=20)])
 
     password = PasswordField(
-        'Password: ',
-        # TODO: Length opf password in form affects Hash?
+        'Password',
         validators=[InputRequired(),Length(max=100)]
     )
 
     # EmailField()
     email = StringField(
-        'Email: ',
-        validators=[InputRequired()])
+        'Email',
+        validators=[InputRequired(),Email()])
 
     first_name = StringField(
-        'First Name: ',
+        'First Name',
         validators=[InputRequired(),Length(max=30)])
 
     last_name = StringField(
-        'Last Name: ',
+        'Last Name',
         validators=[InputRequired(),Length(max=30)])
 
 
@@ -39,11 +36,11 @@ class LoginUserForm(FlaskForm):
     """Form will log in a user"""
 
     username = StringField(
-        'Username: ',
+        'Username',
         validators=[InputRequired(),Length(max=20)])
 
     password = PasswordField(
-        'Password: ',
+        'Password',
         validators=[InputRequired(),Length(max=100)])
 
 
@@ -53,22 +50,3 @@ class LogoutUserForm(FlaskForm):
     Just for CSRF Protection
     """
 
-
-
-
-
-# email, first_name, and last_name.
-
-
-
-
-
-#    name = StringField(
-#         "Pet Name",
-#         validators=[InputRequired()],
-#     )
-
-#     species = SelectField(
-#         "Species",
-#         choices=[("cat", "Cat"), ("dog", "Dog"), ("porcupine", "Porcupine")],
-#     )

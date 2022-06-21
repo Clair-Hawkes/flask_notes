@@ -1,6 +1,6 @@
 """Flask app for Notes"""
 
-from flask import Flask, request, jsonify, render_template, redirect, session, flash
+from flask import Flask, request, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import RegisterUserForm, LoginUserForm, LogoutUserForm
 from models import db, connect_db, User
@@ -59,11 +59,8 @@ def user_register():
 
         else:
             form.username.errors = ["Bad username/email"]
-            # TODO: Question: What is the difference between line 63 & 100?
-            return render_template('register.html', form=form)
 
-    else:
-        return render_template('register.html', form=form)
+    return render_template('register.html', form=form)
 
 
 @app.get('/secret')
@@ -108,6 +105,9 @@ def user_info(username):
     Displays a template showing information about the user.
     (everything except for their password)
     """
+
+    if session['username'] != username:
+        return redirect('/login')
 
     user = User.query.get_or_404(username)
 

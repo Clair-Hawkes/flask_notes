@@ -67,9 +67,9 @@ class User(db.Model):
         return cls(
             username=username,
             password=hashed,
-            email = email,
-            first_name = first_name,
-            last_name = last_name)
+            email=email,
+            first_name=first_name,
+            last_name=last_name)
 
     @classmethod
     def authenticate(cls, username, password):
@@ -82,10 +82,11 @@ class User(db.Model):
 
         user = cls.query.filter_by(username=username).one_or_none()
 
-        if user and bcrypt.check_password_hash(user.password,password):
+        if user and bcrypt.check_password_hash(user.password, password):
             return user
         else:
             return False
+
 
 def connect_db(app):
     """Connect to database."""

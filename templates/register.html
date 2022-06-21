@@ -11,11 +11,9 @@
 
       {% for field in form if field.widget.input_type != 'hidden' %}
 
-        <!-- <div class='mb-3'> -->
-
           <div>
 
-          {{ field.label }}{{ field }}
+          {{ field.label }}: {{ field }}
 
           <span>
             {% if field.errors %}
