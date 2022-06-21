@@ -2,6 +2,7 @@
 
 from flask import Flask, request, jsonify, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
+from forms import RegisterUser
 from models import db, connect_db, User
 # from forms import TODO:
 
@@ -24,5 +25,21 @@ def root():
     """Redirect user to register page"""
 
     return redirect('/register')
+
+@app.route('/register', methods=['GET','POST'])
+def user_register():
+    """
+    Show a form that when submitted will register/create a user.
+    """
+
+    # form = EditPetForm(obj=pet)
+    form = RegisterUser()
+
+    # if form.validate_on_submit():
+
+    # else: TODO: Else return html + form standard
+
+    return render_template('register.html',form=form)
+
 
 
