@@ -2,6 +2,7 @@
 
 from email.message import EmailMessage
 from tokenize import String
+from flask import Flask
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, BooleanField, PasswordField
 from wtforms.validators import InputRequired, Length, URL, Optional
@@ -31,6 +32,19 @@ class RegisterUserForm (FlaskForm):
     last_name = StringField(
         'Last Name: ',
         validators=[InputRequired(),Length(max=30)])
+
+
+class LoginUserForm(FlaskForm):
+    """Form will log in a user"""
+
+    username = StringField(
+        'Username: ',
+        validators=[InputRequired(),Length(max=20)])
+
+    password = PasswordField(
+        'Password: ',
+        validators=[InputRequired(),Length(max=100)])
+
 
 
 

@@ -2,7 +2,7 @@
 
 from flask import Flask, request, jsonify, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import RegisterUserForm
+from forms import RegisterUserForm, LoginUserForm
 from models import db, connect_db, User
 
 app = Flask(__name__)
@@ -52,8 +52,8 @@ def user_register():
         db.session.add(user)
         db.session.commit()
 
+        # TODO: Does a register also log in the user via session?
         session["username"] = user.username
-
 
         return redirect('/secret')
 
@@ -66,3 +66,44 @@ def secret():
     return "You made it!"
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """
+    GET: Show a form that when submitted will login a user.
+    POST: Process login form and pass username to session.
+    """
+
+    form = LoginUserForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        # authenticate will return a user or False
+        # TODO: Authenticate class method
+        user = User.authenticate(username, password)
+
+        if user:
+            session["username"] =  user.username # keep logged in
+            return redirect("/secret")
+
+        else:
+            form.username.errors = ["Bad name/password"]
+
+    return render_template("login.html", form=form)
+
+
+
+
+
+
+# GET /login
+# Show a form that when submitted will login a user.
+# This form should accept a username and a password.
+
+# Make sure you are using WTForms and that your password
+# input hides the characters that the user is typing!
+
+# POST /login
+# Process the login form,
+# ensuring the user is authenticated and going to /secret if so.
