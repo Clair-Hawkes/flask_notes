@@ -9,7 +9,13 @@ bcrypt = Bcrypt()
 
 
 class User(db.Model):
-    """User."""
+    """
+    Creates a user instance.
+    Class Methods:
+    check_if_details_avail - Checks for unique username/ email.
+    register - Registers a user to database with hashed password.
+    authenticate - Validates User authentication.
+    """
 
     __tablename__ = "users"
 
@@ -34,7 +40,11 @@ class User(db.Model):
 
     @classmethod
     def check_if_details_avail(cls, username, email):
-        """Check if username or email has been taken by another user."""
+        """
+        Check if username or email has been taken by another user.
+        u - username, e -email
+        returns True/False
+        """
 
         u = cls.query.filter_by(username=username).one_or_none()
         e = cls.query.filter_by(email=email).one_or_none()
@@ -46,7 +56,10 @@ class User(db.Model):
 
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
-        """Register user w/hashed password & return user."""
+        """
+        Register user w/hashed password & return user.
+        Returns a new user instance
+        """
 
         hashed = bcrypt.generate_password_hash(password).decode('utf8')
 
@@ -61,7 +74,8 @@ class User(db.Model):
     @classmethod
     def authenticate(cls, username, password):
         """
-        Validate that a user exists and that the password matches
+        Validate that a user exists and that the password matches stored
+        hashed value in database.
         Accepts username,password.
         Returns User Instance
         """

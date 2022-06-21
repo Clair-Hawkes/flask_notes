@@ -2,7 +2,7 @@
 
 from flask import Flask, request, jsonify, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import RegisterUserForm, LoginUserForm
+from forms import RegisterUserForm, LoginUserForm, LogoutUserForm
 from models import db, connect_db, User
 
 app = Flask(__name__)
@@ -25,14 +25,15 @@ def root():
 
     return redirect('/register')
 
-@app.route('/register', methods=['GET','POST'])
+
+@app.route('/register', methods=['GET', 'POST'])
 def user_register():
     """
         GET: Show a form that when submitted will register/create a user.
-        POST: Handle form submission and register user in db.
+        POST: Handle form submission and register user in db if valid input and
+        redirects to user page.
     """
 
-    # form = EditPetForm(obj=pet)
     form = RegisterUserForm()
 
     if form.validate_on_submit():
@@ -44,11 +45,11 @@ def user_register():
 
         if User.check_if_details_avail(username=username, email=email):
             user = User.register(
-                username = username,
-                password = password,
-                email = email,
-                first_name = first_name,
-                last_name = last_name
+                username=username,
+                password=password,
+                email=email,
+                first_name=first_name,
+                last_name=last_name
             )
             db.session.add(user)
             db.session.commit()
@@ -58,18 +59,22 @@ def user_register():
 
         else:
             form.username.errors = ["Bad username/email"]
+            # TODO: Question: What is the difference between line 63 & 100?
             return render_template('register.html', form=form)
 
     else:
-        return render_template('register.html',form=form)
+        return render_template('register.html', form=form)
+
 
 @app.get('/secret')
 def secret():
+    """Displays secret html page only accessible by direct get request.
+    If user not logged in redirects to /login."""
 
     if 'username' in session:
         return "You made it!"
     else:
-        return redirect ('/login')
+        return redirect('/login')
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -85,18 +90,17 @@ def login():
         username = form.username.data
         password = form.password.data
 
-        # authenticate will return a user or False
-        # TODO: Authenticate class method
         user = User.authenticate(username, password)
 
         if user:
-            session["username"] =  user.username # keep logged in
+            session["username"] = user.username
             return redirect(f"/users/{session['username']}")
 
         else:
             form.username.errors = ["Bad name/password"]
 
     return render_template("login.html", form=form)
+
 
 @app.get('/users/<username>')
 def user_info(username):
@@ -105,9 +109,20 @@ def user_info(username):
     (everything except for their password)
     """
 
-    # TODO: After Log in/register sending user to this route
-    # TODO: 1. Login, Register
-
     user = User.query.get_or_404(username)
 
-    return render_template('user_page.html',user=user)
+    form = LogoutUserForm()
+
+    return render_template('user_page.html', form=form, user=user)
+
+
+@app.post('/logout')
+def user_logout():
+    """Clear username from session and redirect to root route/"""
+
+    form = LogoutUserForm()
+
+    if form.validate_on_submit():
+        session.pop('username', None)
+
+    return redirect('/')

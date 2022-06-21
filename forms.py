@@ -3,6 +3,7 @@
 from email.message import EmailMessage
 from tokenize import String
 from flask import Flask
+import flask_sqlalchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, BooleanField, PasswordField
 from wtforms.validators import InputRequired, Length, URL, Optional
@@ -46,8 +47,11 @@ class LoginUserForm(FlaskForm):
         validators=[InputRequired(),Length(max=100)])
 
 
-
-
+class LogoutUserForm(FlaskForm):
+    """
+    Form will log out a user
+    Just for CSRF Protection
+    """
 
 
 
