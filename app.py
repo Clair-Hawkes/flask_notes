@@ -1,6 +1,6 @@
 """Flask app for Notes"""
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
 # from forms import TODO:
@@ -17,3 +17,12 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 db.create_all()
+
+
+@app.get('/')
+def root():
+    """Redirect user to register page"""
+
+    return redirect('/register')
+
+
