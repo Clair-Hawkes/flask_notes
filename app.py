@@ -54,7 +54,7 @@ def user_register():
             db.session.commit()
 
             session["username"] = user.username
-            return redirect('/secret')
+            return redirect(f"/users/{session['username']}")
 
         else:
             form.username.errors = ["Bad username/email"]
@@ -66,7 +66,10 @@ def user_register():
 @app.get('/secret')
 def secret():
 
-    return "You made it!"
+    if 'username' in session:
+        return "You made it!"
+    else:
+        return redirect ('/login')
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -88,9 +91,23 @@ def login():
 
         if user:
             session["username"] =  user.username # keep logged in
-            return redirect("/secret")
+            return redirect(f"/users/{session['username']}")
 
         else:
             form.username.errors = ["Bad name/password"]
 
     return render_template("login.html", form=form)
+
+@app.get('/users/<username>')
+def user_info(username):
+    """
+    Displays a template showing information about the user.
+    (everything except for their password)
+    """
+
+    # TODO: After Log in/register sending user to this route
+    # TODO: 1. Login, Register
+
+    user = User.query.get_or_404(username)
+
+    return render_template('user_page.html',user=user)
