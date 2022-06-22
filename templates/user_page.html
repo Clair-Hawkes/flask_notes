@@ -12,8 +12,30 @@
 
   <form action="/logout" method="POST">
     {{ form.hidden_tag() }}
-
     <button type="submit">Logout</button>
   </form>
+  <hr>
+  <ul>
+    {% if user.notes %}
+      {% for note in user.notes %}
+        <li>
+          <div>
+            <h3>{{ note.title }}</h3>
+            <a href="/notes/{{ note.id }}/update">Update</a>
+            <form action="/notes/{{ note.id }}/delete" method="POST">
+              <button>Delete</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+  <hr>
+  <a href="/users/{{ user.username }}/notes/add">Add Note</a>
+  <form action="/users/{{ user.username }}/delete" method="POST">
+    {{ form.hidden_tag() }}
+    <button type="submit">Delete User</button>
+  </form>
+
 
 {% endblock%}

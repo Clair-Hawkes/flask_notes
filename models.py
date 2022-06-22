@@ -21,9 +21,7 @@ class User(db.Model):
 
     username = db.Column(
         db.String(20),
-        primary_key=True,
-        nullable=False,
-        unique=True)
+        primary_key=True)
     password = db.Column(
         db.String(100),
         nullable=False)
@@ -87,6 +85,29 @@ class User(db.Model):
         else:
             return False
 
+
+class Note(db.Model):
+    """
+    Creates a note instance.
+    """
+
+    __tablename__ = "notes"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+    title = db.Column(
+        db.String(100),
+        nullable=False)
+    content = db.Column(
+        db.Text,
+        nullable=False)
+    owner = db.Column(
+        db.String(20),
+        db.ForeignKey('users.username'))
+
+    users = db.relationship('User', backref='notes')
 
 def connect_db(app):
     """Connect to database."""

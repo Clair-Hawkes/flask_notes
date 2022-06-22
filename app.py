@@ -2,12 +2,12 @@
 
 from flask import Flask, request, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import RegisterUserForm, LoginUserForm, LogoutUserForm
-from models import db, connect_db, User
+from forms import RegisterUserForm, LoginUserForm, CSRFOnlyForm
+from models import db, connect_db, User, Note
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///flask_notes'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "oh-so-secret"
 app.config['SQLALCHEMY_ECHO'] = True
@@ -24,6 +24,9 @@ def root():
     """Redirect user to register page"""
 
     return redirect('/register')
+
+
+################################################################################
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -110,19 +113,47 @@ def user_info(username):
         return redirect('/login')
 
     user = User.query.get_or_404(username)
+    # notes = Note.query.filter_by(owner=username).all()
 
-    form = LogoutUserForm()
+    form = CSRFOnlyForm()
 
-    return render_template('user_page.html', form=form, user=user)
+    return render_template(
+        'user_page.html',
+        form=form,
+        user=user)
 
 
 @app.post('/logout')
 def user_logout():
     """Clear username from session and redirect to root route/"""
 
-    form = LogoutUserForm()
+    form = CSRFOnlyForm()
 
     if form.validate_on_submit():
         session.pop('username', None)
 
     return redirect('/')
+
+
+@app.post('/users/<username>/delete')
+def delete_user(username):
+
+    return "delete"
+
+
+@app.route('/users/<username>/notes/add', methods=['GET', 'POST'])
+def add_note(username):
+
+    return "add note"
+
+
+@app.route('/notes/<note_id>/update', methods=['GET', 'POST'])
+def update_note(note_id):
+
+    return "update note"
+
+
+@app.post('/notes/<note_id>/delete')
+def delete_note(note_id):
+
+    return "delete note"
